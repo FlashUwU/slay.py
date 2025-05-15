@@ -15,6 +15,7 @@ dependencies = [
 ]
 
 [project.urls]
+homepage = "https://github.com/FlashUwU/slay.py"
 
 [build-system]
 requires = ["setuptools>=61.0"]
