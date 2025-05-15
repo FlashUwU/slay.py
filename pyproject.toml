@@ -1,0 +1,21 @@
+[project]
+name = "slaypy"
+version = "0.1.0"
+description = "SlayOne API wrapper"
+authors = [
+    { name = "Flash", email = "iamflashuwu@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.11.2"
+license = {text = "GPL-3.0-or-later"}
+keywords = ["slayone", "api", "wrapper"]
+dependencies = [
+    "websocket-client",
+    "ping3"
+]
+
+[project.urls]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
