@@ -8,14 +8,14 @@ Slay.one API Wrapper in Python.
 4. Utils - Tools
 
 ### Slayone Kingdom Concept (define the parts of slay.one):
-1. Lobby
-2. Game Rooms
-3. Store of Collections (Skins, Emotes)
-4. Ability Market
-5. Leaderboard
-6. Vault of Chests
-7. SlayTV
-8. Basic System
-9. Profile System
-10. Clan System
-11. Friends System
+1. __Lobby__
+2. __Game__ Rooms
+3. __Store__ of Collections (Skins, Emotes)
+4. __Ability__ Market
+5. __Leaderboard__
+6. Vault of __Chests__
+7. __SlayTV__
+8. __Basic__ System
+9. __Profile__ System
+10. __Clan__ System
+11. __Friends__ System
