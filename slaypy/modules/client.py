@@ -42,7 +42,7 @@ class Client:
                 raise TimeoutError("Error occurs while finding the nearest server socket.")
 
         elif gaming_server:
-            self.gs_conn = Connection.from_client(self, Socket[gaming_server.upper], settings)
+            self.gs_conn = Connection.from_client(self, Socket[gaming_server.upper()], settings)
 
         else: self.gs_conn = None
         
