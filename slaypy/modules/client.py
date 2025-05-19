@@ -2,7 +2,7 @@ import asyncio, threading
 from typing import Literal, Iterable
 
 from ..core.ws import Connection
-from ..core.enums import Socket
+from ..core.socket import Socket, SocketEnum
 from ..utils.network import find_nearest_socket
 from ..utils.types import AsyncFunc
 
@@ -14,7 +14,7 @@ class Client:
     def __init__(
             self, name: str = "client",
             
-            gaming_server: Literal["EU", "NA", "ASIA", "auto"] = None,
+            gaming_server: Literal["EU", "NA", "ASIA", "auto"] | tuple[str, int, int] = "auto",
             friends_server: bool = False,
             event_registration_mode: int = 3,
 
@@ -33,7 +33,10 @@ class Client:
 
         # try to create connection
 
-        if gaming_server.lower() == "auto":
+        if isinstance(gaming_server, tuple):
+            self.gs_conn = Connection.from_client(self, Socket(*gaming_server), settings)
+
+        elif gaming_server.lower() == "auto":
             gs_socket = find_nearest_socket(type="Gaming")
 
             if gs_socket:
@@ -42,7 +45,7 @@ class Client:
                 raise TimeoutError("Error occurs while finding the nearest server socket.")
 
         elif gaming_server:
-            self.gs_conn = Connection.from_client(self, Socket[gaming_server.upper()], settings)
+            self.gs_conn = Connection.from_client(self, SocketEnum[gaming_server.upper()], settings)
 
         else: self.gs_conn = None
         

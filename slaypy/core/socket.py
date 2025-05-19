@@ -1,6 +1,22 @@
 from enum import Enum
 
-class Socket(Enum):
+class Socket():
+    def __init__(self, ip_addr: str, port: int, type: int = 0):
+        self.name = ""
+
+        self.ip_addr = ip_addr
+        self.port = port
+        self._type = type
+    
+    def name_it(self, name: str):
+        self.name = name
+        return self
+
+    def type(self):
+        if self._type == 0: return "Gaming"
+        elif self._type == 1: return "Friends"
+
+class SocketEnum(Enum):
     """ Slayone Server Socket. """
 
     FS = ("54.37.204.175", 62202, 1)

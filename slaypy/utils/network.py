@@ -2,13 +2,13 @@ from typing import Literal
 
 from ping3 import ping
 
-from ..core.enums import Socket
+from ..core.socket import SocketEnum
 
-def find_nearest_socket(type: Literal["Gaming", "Friends"], timeout=4) -> Socket | None:
+def find_nearest_socket(type: Literal["Gaming", "Friends"], timeout=4) -> SocketEnum | None:
     nearest_socket = None
     nearest_latency = None
 
-    for socket in Socket:
+    for socket in SocketEnum:
         if socket.type != type: continue
 
         latency = ping(socket.ip_addr, timeout)

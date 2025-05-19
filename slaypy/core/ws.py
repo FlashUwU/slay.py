@@ -1,7 +1,7 @@
 from websocket import WebSocketApp
 from typing import Type
 
-from .enums import Socket
+from .socket import Socket
 from ..objects import map as objects_map
 from ..objects.basic import BasicObject
 
@@ -37,7 +37,7 @@ class Connection():
             self.ws.close()
 
     def on_connect(self, ws: WebSocketApp):
-        print(f"[{self.sid}] Connected to slayone {self.socket.name} server.")
+        print(f"[{self.sid}] Connected to slayone server {self.socket.name if self.socket.name else (self.socket.ip_addr, self.socket.port)}.")
 
         self.trigger_event("open")
 
@@ -55,7 +55,7 @@ class Connection():
         self.trigger_event("error")
     
     def on_disconnect(self, ws: WebSocketApp, code: int, message: str):
-        print(f"[{self.sid}] Disconnected to slayone {self.socket.name} server (code: {code}, message: {message}).")
+        print(f"[{self.sid}] Disconnected to slayone server {self.socket.name if self.socket.name else (self.socket.ip_addr, self.socket.port)} (code: {code}, message: {message}).")
 
         self.trigger_event("_close")
         self.trigger_event("close")
