@@ -10,7 +10,7 @@ class Settings:
             self,
 
             objects: Iterable[Literal["basic", "lobby"]] = ["basic"],
-            operators: Iterable[Literal["basic"]] = ["basic"],
+            operators: Iterable[Literal["basic", "lobby"]] = ["basic"],
 
             disable_events: Iterable[str] = []
         ):

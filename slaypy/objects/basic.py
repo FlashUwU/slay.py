@@ -36,68 +36,83 @@ class BasicObject():
 
     def _process_message(self, message: str):
         ipacket_array = message.split(DELIMITER1)
-        event_name, ipacket_ref = self.ipackets.get(ipacket_array[0])
+        event_name, ipacket_ref = x if (x := self.ipackets.get(ipacket_array[0])) else (None, None)
 
         if not ipacket_ref or not event_name: return
 
-        args = []; index = 0
+        is_list_data = False
+        if isinstance(x:=ipacket_ref[0], int) and x > 99:
+            x -= 100
+            repeated_times = (len(ipacket_array)-1)//x
+            ipacket_ref = ipacket_ref[1:]
+            is_list_data = True
 
-        for pattern in ipacket_ref:
-            index += 1; need_assign = False
+        args_arr = []
+        while repeated_times:
+            args = []; index = 0
 
-            if isinstance(pattern, type):
-                obj: type = pattern()
+            for pattern in ipacket_ref:
+                index += 1; need_assign = False
 
-                for attr, vtype in obj.__dict__.items():
-                    obj.__dict__[attr] = vtype(ipacket_array[index])
-                    index += 1
+                if isinstance(pattern, type):
+                    obj: type = pattern()
+
+                    for attr, vtype in obj.__dict__.items():
+                        obj.__dict__[attr] = vtype(ipacket_array[index])
+                        index += 1
+                    
+                    args.append(obj)
+                    index -= 1; continue
+
+                try: vtype = pattern[0]
+                except: vtype = pattern
+
+                if vtype > 9:
+                    need_assign = True
+                    vtype = vtype - 10
+
+                if vtype == 0: vtype = original
+                elif vtype == 1: vtype = int
+                elif vtype == 2: vtype = float
+                elif vtype == 3: vtype = json.loads
+
+                if isinstance(pattern, int):
+                    args.append(vtype(ipacket_array[index])); continue
+
+                if len(pattern) == 3:
+                    index += pattern[2]
+
+                if isinstance(pattern[1], type):
+                    obj: type = pattern[1]()
+
+                    for attr, vtype2 in obj.__dict__.items():
+                        value = ipacket_array[index]
+
+                        obj.__dict__[attr] = vtype2(value)
+
+                        index += 1
+                    
+                    obj = vtype(obj)
+
+                    if need_assign: setattr(self.client, obj.__class__.__name__.lower(), obj)
+                    else: args.append(obj)
+
+                    index -= 1; continue
                 
-                args.append(obj)
-                index -= 1; continue
-
-            try: vtype = pattern[0]
-            except: vtype = pattern
-
-            if vtype > 9:
-                need_assign = True
-                vtype = vtype - 10
-
-            if vtype == 0: vtype = original
-            elif vtype == 1: vtype = int
-            elif vtype == 2: vtype = float
-            elif vtype == 3: vtype = json.loads
-
-            if isinstance(pattern, int):
-                args.append(vtype(ipacket_array[index])); continue
-
-            if len(pattern) == 3:
-                index += pattern[2]
-
-            if isinstance(pattern[1], type):
-                obj: type = pattern[1]()
-
-                for attr, vtype2 in obj.__dict__.items():
+                if isinstance(pattern, tuple):
                     value = ipacket_array[index]
 
-                    obj.__dict__[attr] = vtype2(value)
+                    if need_assign: setattr(self.client, pattern[1], vtype(value))
 
-                    index += 1
-                
-                obj = vtype(obj)
-
-                if need_assign: setattr(self.client, obj.__class__.__name__.lower(), obj)
-                else: args.append(obj)
-
-                index -= 1; continue
+                    continue
             
-            if isinstance(pattern, tuple):
-                value = ipacket_array[index]
+            args_arr.append(args)
+            repeated_times -= 1
 
-                if need_assign: setattr(self.client, pattern[1], vtype(value))
-
-                continue       
-
-        self.client.trigger_event(event_name, *args)
+        if is_list_data:
+            self.client.trigger_event(event_name, *args_arr)
+        else:
+            self.client.trigger_event(event_name, *args_arr[0])
 
     def __add__(self, object: Type["BasicObject"]):
         if not isinstance(object, BasicObject):

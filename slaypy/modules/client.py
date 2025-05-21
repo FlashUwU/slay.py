@@ -8,6 +8,7 @@ from ..utils.types import AsyncFunc
 
 from ..objects.basic import Player
 from .basic import BasicOperator
+from .lobby import LobbyOperator
 from .settings import Settings
 
 class Client:
@@ -52,6 +53,7 @@ class Client:
         # setup operators
 
         self.basic = BasicOperator(self.gs_conn.send_message) if "basic" in settings.operators else None
+        self.lobby = LobbyOperator(self.gs_conn.send_message) if "lobby" in settings.operators else None
 
         # try to registry connection event function
         
@@ -87,6 +89,8 @@ class Client:
 
             for efunc in efuncs:
                 try: self.async_loop.call_soon_threadsafe(self.async_loop.create_task, efunc(*args, **kwargs))
+                except TypeError:
+                    print("missing argument")
                 except: continue
 
         except AttributeError: pass

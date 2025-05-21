@@ -69,7 +69,7 @@ class Connection():
 
 
         for object_name in settings.objects:
-            if "basic":
+            if object_name == "basic":
                 conn.object += BasicObject()
                 continue
 
